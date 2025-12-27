@@ -18,8 +18,14 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '192.168.1.39',
 ]
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+ALLOWED_HOSTS.append('drivedata-backend.onrender.com')
+
 
 # Production settings for Render
 if not DEBUG:
@@ -133,6 +139,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",  # Alternative Vite port
     "http://127.0.0.1:5174",
+    "https://drivedata.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
