@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from cloudinary.models import CloudinaryField
 import uuid
 import qrcode
 from io import BytesIO
@@ -13,7 +14,7 @@ import os
 class UserProfile(models.Model):
     """Extended user profile to store additional information like photo"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    photo = models.ImageField(upload_to='user_photos/', null=True, blank=True)
+    photo = CloudinaryField(null=True, blank=True)
     phone = models.CharField(max_length=15, blank=True)
     bio = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -47,7 +48,7 @@ class Owner(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     address = models.TextField()
-    photo = models.ImageField(upload_to='owner_photos/', null=True, blank=True)
+    photo = CloudinaryField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -90,7 +91,7 @@ class Vehicle(models.Model):
     owner_email = models.EmailField(blank=True)
     owner_phone = models.CharField(max_length=15, blank=True)
     owner_address = models.TextField(blank=True)
-    owner_photo = models.ImageField(upload_to='owner_photos/', null=True, blank=True)
+    owner_photo = CloudinaryField(null=True, blank=True)
     
     # Documents & Dates
     insurance_expiry = models.DateField()
@@ -98,13 +99,13 @@ class Vehicle(models.Model):
     registration_date = models.DateField()
     
     # Photos
-    front_photo = models.ImageField(upload_to='vehicle_photos/', null=True, blank=True)
-    back_photo = models.ImageField(upload_to='vehicle_photos/', null=True, blank=True)
-    side_photo = models.ImageField(upload_to='vehicle_photos/', null=True, blank=True)
+    front_photo = CloudinaryField(null=True, blank=True)
+    back_photo = CloudinaryField(null=True, blank=True)
+    side_photo = CloudinaryField(null=True, blank=True)
     
     # QR Code & Logo
-    qr_code = models.ImageField(upload_to='qr_codes/', blank=True)
-    logo = models.ImageField(upload_to='vehicle_logos/', blank=True)
+    qr_code = CloudinaryField(blank=True)
+    logo = CloudinaryField(blank=True)
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
@@ -114,12 +115,15 @@ class Vehicle(models.Model):
         return f"{self.registration_number} - {self.make} {self.model}"
 
     def save(self, *args, **kwargs):
-        # Generate QR code if it doesn't exist
-        if not self.qr_code:
-            self.generate_qr_code()
-        
-        # Save the vehicle
+        # Save first to get primary key
+        is_new = self.pk is None
         super().save(*args, **kwargs)
+        
+        # Generate QR code after object has pk (only for new objects)
+        if is_new and not self.qr_code:
+            self.generate_qr_code()
+            # Save again with QR code, but prevent recursion
+            super().save(update_fields=['qr_code'])
 
     def generate_qr_code(self):
         """Generate QR code containing vehicle unique ID"""
@@ -210,22 +214,19 @@ class Vehicle(models.Model):
         # Load and embed QR code in the center of the car
         if self.qr_code:
             try:
-                # Check if file exists
-                if os.path.exists(self.qr_code.path):
-                    qr_img = Image.open(self.qr_code.path)
-                    # Resize QR code to fit prominently in car body
-                    qr_size = 300
-                    qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
-                    
-                    # Position QR code in the center/door area of the car
-                    qr_x = (logo_width - qr_size) // 2
-                    qr_y = (logo_height - qr_size) // 2 + 30
-                    
-                    # Paste QR code directly (it already has white background)
-                    logo_img.paste(qr_img, (qr_x, qr_y))
-                    print(f"QR code embedded in logo for {self.registration_number}")
-                else:
-                    print(f"QR code file not found at: {self.qr_code.path}")
+                # Open QR code directly from CloudinaryField (file-like object)
+                qr_img = Image.open(self.qr_code)
+                # Resize QR code to fit prominently in car body
+                qr_size = 300
+                qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
+                
+                # Position QR code in the center/door area of the car
+                qr_x = (logo_width - qr_size) // 2
+                qr_y = (logo_height - qr_size) // 2 + 30
+                
+                # Paste QR code directly (it already has white background)
+                logo_img.paste(qr_img, (qr_x, qr_y))
+                print(f"QR code embedded in logo for {self.registration_number}")
             except Exception as e:
                 print(f"Error embedding QR code: {e}")
         

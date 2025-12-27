@@ -5,6 +5,15 @@ from .models import Vehicle, Owner
 
 class OwnerSerializer(serializers.ModelSerializer):
     """Serializer for Owner model"""
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure photo URL is properly serialized
+        if representation.get('photo'):
+            value = getattr(instance, 'photo')
+            representation['photo'] = value.url if value else None
+        return representation
+    
     class Meta:
         model = Owner
         fields = ['id', 'name', 'email', 'phone', 'address', 'photo', 'created_at', 'updated_at']
@@ -14,6 +23,18 @@ class OwnerSerializer(serializers.ModelSerializer):
 class VehicleSerializer(serializers.ModelSerializer):
     """Serializer for Vehicle model"""
     owner_username = serializers.CharField(source='owner.username', read_only=True)
+    
+    # Ensure Cloudinary URLs are properly serialized
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Convert CloudinaryField objects to URLs
+        cloudinary_fields = ['owner_photo', 'front_photo', 'back_photo', 'side_photo', 'qr_code', 'logo']
+        for field in cloudinary_fields:
+            if representation.get(field):
+                # CloudinaryField already returns URL string, but ensure it's accessible
+                value = getattr(instance, field)
+                representation[field] = value.url if value else None
+        return representation
     
     class Meta:
         model = Vehicle
