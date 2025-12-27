@@ -34,7 +34,10 @@ if not DEBUG:
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-
+import os
+from pathlib import Path
+import cloudinary
+import cloudinary_storage
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +52,18 @@ INSTALLED_APPS = [
     'corsheaders',
     
     'vehicles',
+    'cloudinary',
+    'cloudinary_storage'
 ]
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+
+cloudinary.config(
+    cloud_name=os.environ.get("devg1wozt"),
+    api_key=os.environ.get("134381684329325"),
+    api_secret=os.environ.get("tI50rPopds3Gk4zx-ISFj9DwjNM"),
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -130,8 +144,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (Uploaded files)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
