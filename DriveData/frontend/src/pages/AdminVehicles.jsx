@@ -4,7 +4,7 @@ import {
   FaShieldAlt, FaSearch, FaSignOutAlt, FaCheckCircle, 
   FaBan, FaTrash, FaCar, FaEye 
 } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 import './AdminVehicles.css';
 
 const AdminVehicles = () => {
@@ -37,8 +37,7 @@ const AdminVehicles = () => {
   const fetchVehicles = async () => {
     try {
       const token = localStorage.getItem('admin_access_token');
-      const response = await api.post(
-  '/owners/', formData, {
+      const response = await api.get('/admin/vehicles/', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -67,8 +66,8 @@ const AdminVehicles = () => {
     if (window.confirm(`Verify vehicle ${regNumber}?`)) {
       try {
         const token = localStorage.getItem('admin_access_token');
-        await axios.patch(
-          `http://localhost:8000/api/admin/vehicles/${vehicleId}/verify/`,
+        await api.patch(
+          `/admin/vehicles/${vehicleId}/verify/`,
           {},
           {
             headers: {
@@ -89,8 +88,8 @@ const AdminVehicles = () => {
     if (window.confirm(`⚠️ Blacklist vehicle ${regNumber}? This is a serious action.`)) {
       try {
         const token = localStorage.getItem('admin_access_token');
-        await axios.patch(
-          `http://localhost:8000/api/admin/vehicles/${vehicleId}/blacklist/`,
+        await api.patch(
+          `/admin/vehicles/${vehicleId}/blacklist/`,
           {},
           {
             headers: {
@@ -112,8 +111,8 @@ const AdminVehicles = () => {
       if (window.confirm(`Are you absolutely sure you want to delete ${regNumber}?`)) {
         try {
           const token = localStorage.getItem('admin_access_token');
-          await axios.delete(
-            `http://localhost:8000/api/admin/vehicles/${vehicleId}/delete/`,
+          await api.delete(
+            `/admin/vehicles/${vehicleId}/delete/`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`

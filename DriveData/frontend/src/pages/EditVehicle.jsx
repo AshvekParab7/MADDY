@@ -4,6 +4,8 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { vehicleAPI } from '../services/api';
 import './AddVehicle.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const EditVehicle = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -80,9 +82,9 @@ const EditVehicle = () => {
 
       // Store current photo URLs
       setCurrentPhotos({
-        front_photo: data.front_photo ? `http://localhost:8000${data.front_photo}` : null,
-        back_photo: data.back_photo ? `http://localhost:8000${data.back_photo}` : null,
-        side_photo: data.side_photo ? `http://localhost:8000${data.side_photo}` : null
+        front_photo: data.front_photo ? `${API_BASE_URL}${data.front_photo}` : null,
+        back_photo: data.back_photo ? `${API_BASE_URL}${data.back_photo}` : null,
+        side_photo: data.side_photo ? `${API_BASE_URL}${data.side_photo}` : null
       });
 
       setError('');

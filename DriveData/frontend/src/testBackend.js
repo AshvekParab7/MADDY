@@ -1,12 +1,12 @@
 // Test this file to check if backend is running
 // Open browser console and check the network tab
 
-import axios from 'axios';
+import api, { ownerAPI } from './services/api';
 
 const testBackend = async () => {
   try {
     // Test 1: Check if backend is accessible
-    const healthCheck = await axios.get('http://localhost:8000/api/owners/');
+    const healthCheck = await ownerAPI.getAllOwners();
     console.log('✅ Backend is accessible');
     console.log('Owners:', healthCheck.data);
     
@@ -17,12 +17,7 @@ const testBackend = async () => {
     formData.append('phone', '1234567890');
     formData.append('address', '123 Test Street');
     
-    const createResponse = await await api.post(
-  '/owners/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const createResponse = await ownerAPI.createOwner(formData);
     
     console.log('✅ Owner created successfully:', createResponse.data);
     

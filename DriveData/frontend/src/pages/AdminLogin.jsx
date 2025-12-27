@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShieldAlt, FaLock, FaUser } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
@@ -37,7 +37,7 @@ const AdminLogin = () => {
     console.log('Admin login attempt:', credentials.username);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/admin/login/', credentials);
+      const response = await api.post('/admin/login/', credentials);
       
       console.log('Admin login response:', response.data);
       

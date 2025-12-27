@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 import './Login.css';
 
 const Login = () => {
@@ -43,7 +43,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/token/', {
+      const response = await api.post('/token/', {
         username: formData.username,
         password: formData.password,
       });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock, FaEnvelope, FaUserPlus, FaCamera } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 import './Signup.css';
 
 const Signup = () => {
@@ -116,7 +116,7 @@ const Signup = () => {
       if (formData.last_name) formDataToSend.append('last_name', formData.last_name);
       if (formData.photo) formDataToSend.append('photo', formData.photo);
 
-      const response = await axios.post('http://localhost:8000/api/register/', formDataToSend, {
+      const response = await api.post('/register/', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

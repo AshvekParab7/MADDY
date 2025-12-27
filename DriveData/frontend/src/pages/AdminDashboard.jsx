@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaShieldAlt, FaCar, FaUsers, FaSignOutAlt, FaChartLine, FaClock } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('admin_access_token');
-      const response = await axios.get('http://localhost:8000/api/admin/stats/', {
+      const response = await api.get('/admin/stats/', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
