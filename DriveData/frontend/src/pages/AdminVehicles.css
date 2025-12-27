@@ -1,0 +1,207 @@
+.admin-vehicles-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.search-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 18px 14px 50px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #e94560;
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+}
+
+.results-count {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vehicles-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.admin-vehicles-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-vehicles-table thead {
+  background: #f9fafb;
+}
+
+.admin-vehicles-table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-vehicles-table td {
+  padding: 18px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  font-size: 14px;
+}
+
+.admin-vehicles-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.admin-vehicles-table .reg-number {
+  font-weight: 600;
+  color: #1e40af;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.action-btn svg {
+  font-size: 16px;
+}
+
+.action-btn.view {
+  background: #3b82f6;
+  color: white;
+}
+
+.action-btn.view:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.action-btn.verify {
+  background: #10b981;
+  color: white;
+}
+
+.action-btn.verify:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.action-btn.blacklist {
+  background: #f59e0b;
+  color: white;
+}
+
+.action-btn.blacklist:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+}
+
+.action-btn.delete {
+  background: #ef4444;
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.no-vehicles {
+  background: white;
+  border-radius: 12px;
+  padding: 80px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.no-vehicles svg {
+  font-size: 64px;
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+.no-vehicles p {
+  color: #6b7280;
+  font-size: 18px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-vehicles-table {
+    font-size: 13px;
+  }
+
+  .admin-vehicles-table th,
+  .admin-vehicles-table td {
+    padding: 12px 10px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicles-table-container {
+    padding: 15px;
+  }
+
+  .admin-vehicles-table th:first-child,
+  .admin-vehicles-table td:first-child {
+    display: none;
+  }
+}

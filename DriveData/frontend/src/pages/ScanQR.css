@@ -1,0 +1,141 @@
+.scan-qr-page {
+  padding: 40px 20px;
+}
+
+.scan-qr-page h1 {
+  font-size: 42px;
+  color: var(--dark-blue);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 18px;
+  color: var(--gray);
+  margin-bottom: 40px;
+}
+
+.scan-container {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 40px;
+}
+
+.scan-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.scan-btn {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 18px;
+  padding: 16px 24px;
+}
+
+.scanner-container {
+  width: 100%;
+}
+
+#qr-reader {
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* QR Scanner specific styles */
+#qr-reader video {
+  border-radius: 8px;
+  width: 100% !important;
+}
+
+#qr-reader__dashboard {
+  margin-top: 10px !important;
+}
+
+.stop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.scanned-result {
+  margin-top: 15px;
+  padding: 15px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.loading-message {
+  margin-top: 20px;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.manual-input-container {
+  width: 100%;
+}
+
+.info-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.info-section h2 {
+  font-size: 24px;
+  color: var(--dark-blue);
+  margin-bottom: 20px;
+}
+
+.info-section ol {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.info-section li {
+  margin-bottom: 10px;
+  color: var(--dark-gray);
+  line-height: 1.6;
+}
+
+.note {
+  background: var(--extra-light-blue);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-blue);
+  margin-top: 20px;
+}
+
+.error-message {
+  margin-top: 20px;
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .scan-qr-page h1 {
+    font-size: 32px;
+  }
+
+  .scan-container {
+    padding: 20px;
+  }
+}

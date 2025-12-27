@@ -1,0 +1,192 @@
+/* My Vehicles Mini Container */
+.my-vehicles-mini {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Vehicles Grid */
+.vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Vehicle Mini Card */
+.vehicle-mini-card {
+  background: var(--extra-light-blue);
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.vehicle-mini-card:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 6px 12px rgba(30, 64, 175, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.vehicle-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dark-blue);
+  margin: 0;
+}
+
+/* QR Status Badge */
+.qr-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.qr-status.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.qr-status.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.qr-status svg {
+  font-size: 12px;
+}
+
+/* Vehicle Make/Model */
+.vehicle-make-model {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0 0 15px 0;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn-action.primary {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.btn-action.primary:hover {
+  background: var(--dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+}
+
+.btn-action.secondary {
+  background: white;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.btn-action.secondary:hover {
+  background: var(--primary-blue);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* No Vehicles State */
+.no-vehicles {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 16px;
+  margin: 40px 0 20px 0;
+}
+
+/* View All Container */
+.view-all-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.view-all-container .btn {
+  padding: 12px 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .my-vehicles-mini {
+    padding: 15px;
+  }
+
+  .vehicles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .btn-action {
+    width: 100%;
+  }
+}
+
+/* Additional Button Styles for consistency */
+.my-vehicles-mini .btn {
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.my-vehicles-mini .btn-primary {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.my-vehicles-mini .btn-primary:hover {
+  background: var(--dark-blue);
+  transform: translateY(-2px);
+}
+
+.my-vehicles-mini .btn-secondary {
+  background: white;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.my-vehicles-mini .btn-secondary:hover {
+  background: var(--primary-blue);
+  color: white;
+}

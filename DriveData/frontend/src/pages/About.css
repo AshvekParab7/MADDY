@@ -1,0 +1,176 @@
+.about-page {
+  padding: 40px 20px;
+}
+
+.about-hero {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.about-hero h1 {
+  font-size: 48px;
+  color: var(--dark-blue);
+  margin-bottom: 20px;
+}
+
+.lead {
+  font-size: 20px;
+  color: var(--gray);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.mission-section {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  padding: 40px;
+}
+
+.mission-section h2 {
+  font-size: 32px;
+  color: var(--dark-blue);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.mission-section p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--dark-gray);
+  text-align: center;
+}
+
+.features-list {
+  margin-bottom: 60px;
+}
+
+.features-list h2 {
+  font-size: 36px;
+  color: var(--dark-blue);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 40px 30px;
+}
+
+.feature-item .feature-icon {
+  font-size: 50px;
+  color: var(--primary-blue);
+  margin-bottom: 20px;
+}
+
+.feature-item h3 {
+  font-size: 22px;
+  color: var(--dark-blue);
+  margin-bottom: 15px;
+}
+
+.feature-item p {
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.technology-section {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  padding: 40px;
+}
+
+.technology-section h2 {
+  font-size: 32px;
+  color: var(--dark-blue);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.tech-item h4 {
+  font-size: 24px;
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+}
+
+.tech-item ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tech-item li {
+  padding: 10px 0;
+  color: var(--dark-gray);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tech-item li:last-child {
+  border-bottom: none;
+}
+
+.cta-section {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+  color: var(--white);
+  text-align: center;
+  padding: 60px 40px;
+}
+
+.cta-card h2 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.cta-card p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.cta-card .btn {
+  background: var(--white);
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.cta-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .about-hero h1 {
+    font-size: 36px;
+  }
+
+  .lead {
+    font-size: 18px;
+  }
+
+  .features-list h2,
+  .cta-card h2 {
+    font-size: 28px;
+  }
+
+  .mission-section,
+  .technology-section,
+  .cta-card {
+    padding: 30px 20px;
+  }
+}
