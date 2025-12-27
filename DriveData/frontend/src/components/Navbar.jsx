@@ -35,7 +35,8 @@ const Navbar = () => {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.get('http://localhost:8000/api/profile/', {
+      const response = await api.post(
+  '/owners/', formData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

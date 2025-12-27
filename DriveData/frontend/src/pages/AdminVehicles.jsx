@@ -37,7 +37,8 @@ const AdminVehicles = () => {
   const fetchVehicles = async () => {
     try {
       const token = localStorage.getItem('admin_access_token');
-      const response = await axios.get('http://localhost:8000/api/admin/vehicles/', {
+      const response = await api.post(
+  '/owners/', formData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

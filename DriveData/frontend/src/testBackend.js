@@ -17,7 +17,8 @@ const testBackend = async () => {
     formData.append('phone', '1234567890');
     formData.append('address', '123 Test Street');
     
-    const createResponse = await axios.post('http://localhost:8000/api/owners/', formData, {
+    const createResponse = await await api.post(
+  '/owners/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
