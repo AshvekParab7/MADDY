@@ -3,6 +3,7 @@ from rest_framework.decorators import action, api_view, permission_classes as pe
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 from .models import Vehicle, Owner, UserProfile
 from .serializers import VehicleSerializer, OwnerSerializer, VehicleScanSerializer, UserRegistrationSerializer, UserProfileSerializer
@@ -19,8 +20,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
 class VehicleViewSet(viewsets.ModelViewSet):
     """ViewSet for managing vehicles - user can only access their own vehicles"""
     serializer_class = VehicleSerializer
-    authentication_classes = [AdminJWTAuthentication]
-    permission_classes = [IsVehicleOwner]
+    permission_classes = [IsAuthenticated, IsVehicleOwner]
 
     def get_queryset(self):
         """
@@ -53,8 +53,10 @@ class VehicleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Automatically assign the authenticated user as owner when creating a vehicle.
-        This prevents users from creating vehicles for other users.
+        This ensures the owner is correctly set from the request context.
         """
+        # The serializer already has CurrentUserDefault, but we explicitly set it here
+        # to ensure it works correctly in all cases
         serializer.save(owner=self.request.user)
 
     def perform_update(self, serializer):
