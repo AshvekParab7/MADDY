@@ -58,6 +58,7 @@ class VehicleSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'unique_id',
+            'owner', 
             'registration_number',
             'make',
             'model',
