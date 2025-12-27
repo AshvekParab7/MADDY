@@ -119,12 +119,11 @@ class Vehicle(models.Model):
         is_new = self.pk is None
         super().save(*args, **kwargs)
         
-        # Generate QR code and logo after object has pk (only for new objects)
+        # Generate QR code after object has pk (only for new objects)
         if is_new and not self.qr_code:
             self.generate_qr_code()
-            self.generate_logo()
-            # Save again with QR code and logo, but prevent recursion
-            super().save(update_fields=['qr_code', 'logo'])
+            # Save again with QR code, but prevent recursion
+            super().save(update_fields=['qr_code'])
 
     def generate_qr_code(self):
         """Generate QR code containing vehicle unique ID"""
@@ -215,19 +214,8 @@ class Vehicle(models.Model):
         # Load and embed QR code in the center of the car
         if self.qr_code:
             try:
-                # Support both filesystem and Cloudinary
-                if hasattr(self.qr_code, 'path') and os.path.exists(self.qr_code.path):
-                    # Local filesystem - use path
-                    qr_img = Image.open(self.qr_code.path)
-                    print(f"Loading QR code from local path for {self.registration_number}")
-                else:
-                    # Cloudinary - download from URL
-                    from urllib.request import urlopen
-                    qr_url = self.qr_code.url
-                    print(f"Downloading QR code from Cloudinary: {qr_url}")
-                    response = urlopen(qr_url)
-                    qr_img = Image.open(BytesIO(response.read()))
-                
+                # Open QR code directly from CloudinaryField (file-like object)
+                qr_img = Image.open(self.qr_code)
                 # Resize QR code to fit prominently in car body
                 qr_size = 300
                 qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
@@ -241,8 +229,6 @@ class Vehicle(models.Model):
                 print(f"QR code embedded in logo for {self.registration_number}")
             except Exception as e:
                 print(f"Error embedding QR code: {e}")
-                import traceback
-                traceback.print_exc()
         
         # Save logo
         buffer = BytesIO()
