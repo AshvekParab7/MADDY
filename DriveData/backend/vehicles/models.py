@@ -119,11 +119,25 @@ class Vehicle(models.Model):
         is_new = self.pk is None
         super().save(*args, **kwargs)
         
-        # Generate QR code after object has pk (only for new objects)
-        if is_new and not self.qr_code:
-            self.generate_qr_code()
-            # Save again with QR code, but prevent recursion
-            super().save(update_fields=['qr_code'])
+        # Generate QR code and logo after object has pk (only for new objects)
+        if is_new:
+            try:
+                # Generate QR code first
+                if not self.qr_code:
+                    self.generate_qr_code()
+                    print(f"✅ QR code generated for {self.registration_number}")
+                
+                # Generate logo with embedded QR code
+                if not self.logo:
+                    self.generate_logo()
+                    print(f"✅ Logo generated for {self.registration_number}")
+                
+                # Save both QR code and logo, prevent recursion
+                super().save(update_fields=['qr_code', 'logo'])
+            except Exception as e:
+                print(f"❌ Error generating QR/Logo for {self.registration_number}: {e}")
+                import traceback
+                traceback.print_exc()
 
     def generate_qr_code(self):
         """Generate QR code containing vehicle unique ID"""
@@ -214,8 +228,27 @@ class Vehicle(models.Model):
         # Load and embed QR code in the center of the car
         if self.qr_code:
             try:
-                # Open QR code directly from CloudinaryField (file-like object)
-                qr_img = Image.open(self.qr_code)
+                # Support both filesystem and Cloudinary
+                if hasattr(self.qr_code, 'path'):
+                    try:
+                        # Try local filesystem first
+                        qr_img = Image.open(self.qr_code.path)
+                        print(f"📁 Loading QR code from local path")
+                    except (AttributeError, FileNotFoundError):
+                        # Fallback to Cloudinary URL
+                        from urllib.request import urlopen
+                        qr_url = self.qr_code.url
+                        print(f"☁️ Downloading QR code from Cloudinary: {qr_url}")
+                        response = urlopen(qr_url)
+                        qr_img = Image.open(BytesIO(response.read()))
+                else:
+                    # Direct Cloudinary URL download
+                    from urllib.request import urlopen
+                    qr_url = self.qr_code.url
+                    print(f"☁️ Downloading QR code from Cloudinary: {qr_url}")
+                    response = urlopen(qr_url)
+                    qr_img = Image.open(BytesIO(response.read()))
+                
                 # Resize QR code to fit prominently in car body
                 qr_size = 300
                 qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
@@ -226,9 +259,11 @@ class Vehicle(models.Model):
                 
                 # Paste QR code directly (it already has white background)
                 logo_img.paste(qr_img, (qr_x, qr_y))
-                print(f"QR code embedded in logo for {self.registration_number}")
+                print(f"✅ QR code embedded in logo for {self.registration_number}")
             except Exception as e:
-                print(f"Error embedding QR code: {e}")
+                print(f"❌ Error embedding QR code in logo: {e}")
+                import traceback
+                traceback.print_exc()
         
         # Save logo
         buffer = BytesIO()
