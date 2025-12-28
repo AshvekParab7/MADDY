@@ -440,8 +440,8 @@
   .signup-link {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 8px 16px 16px 16px;
-    border-radius: 8px;
+    margin: 0;
+    border-radius: 0;
   }
 }
 
