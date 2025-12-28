@@ -49,7 +49,14 @@ class VehicleSerializer(serializers.ModelSerializer):
 
         for field in cloudinary_fields:
             value = getattr(instance, field, None)
-            representation[field] = value.url if value else None
+            # Check if field has a value and a URL
+            if value and hasattr(value, 'url'):
+                try:
+                    representation[field] = value.url
+                except:
+                    representation[field] = None
+            else:
+                representation[field] = None
 
         return representation
 

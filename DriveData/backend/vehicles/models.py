@@ -122,13 +122,17 @@ class Vehicle(models.Model):
         # Generate QR code and logo after object has pk (only for new objects)
         if is_new:
             try:
-                # Generate QR code first
-                if not self.qr_code:
+                # Check if qr_code field is truly empty (not just empty string)
+                qr_code_value = str(self.qr_code) if self.qr_code else ""
+                logo_value = str(self.logo) if self.logo else ""
+                
+                # Generate QR code first (only if completely empty)
+                if not qr_code_value or qr_code_value == "":
                     self.generate_qr_code()
                     print(f"✅ QR code generated for {self.registration_number}")
                 
-                # Generate logo with embedded QR code
-                if not self.logo:
+                # Generate logo with embedded QR code (only if completely empty)
+                if not logo_value or logo_value == "":
                     self.generate_logo()
                     print(f"✅ Logo generated for {self.registration_number}")
                 
