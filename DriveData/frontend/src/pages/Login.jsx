@@ -15,10 +15,10 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Redirect to dashboard if already authenticated
+    // Redirect to home page if already authenticated
     const token = localStorage.getItem('access_token');
     if (token) {
-      navigate('/dashboard', { replace: true });
+      navigate('/', { replace: true });
     }
   }, [navigate]);
 
@@ -52,8 +52,8 @@ const Login = () => {
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
 
-      // Redirect to the page user was trying to access, or dashboard
-      const from = location.state?.from?.pathname || '/dashboard';
+      // Redirect to the page user was trying to access, or home page
+      const from = location.state?.from?.pathname || '/';
       
       // Force reload to update navbar state
       window.location.href = from;
