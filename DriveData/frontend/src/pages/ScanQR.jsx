@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaQrcode, FaKeyboard, FaCamera, FaStop } from 'react-icons/fa';
+import { FaQrcode, FaKeyboard, FaCamera, FaStop, FaUpload } from 'react-icons/fa';
 import { Html5Qrcode } from 'html5-qrcode';
 import { vehicleAPI } from '../services/api';
 import './ScanQR.css';
@@ -8,6 +8,7 @@ import './ScanQR.css';
 const ScanQR = () => {
   const navigate = useNavigate();
   const html5QrcodeRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [scanning, setScanning] = useState(false);
   const [manualInput, setManualInput] = useState(false);
@@ -103,6 +104,36 @@ const ScanQR = () => {
     }
   };
 
+  /* ================== UPLOAD QR IMAGE ================== */
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const html5Qrcode = new Html5Qrcode('qr-reader-file');
+      
+      const decodedText = await html5Qrcode.scanFile(file, true);
+      setScannedText(decodedText);
+      await lookupVehicle(decodedText);
+    } catch (err) {
+      console.error('Error scanning QR from image:', err);
+      setError('Unable to read QR code from this image. Please try another image or use camera scanner.');
+      setLoading(false);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   /* ================== MANUAL ENTRY ================== */
   const handleManualSubmit = async (e) => {
     e.preventDefault();
@@ -128,14 +159,31 @@ const ScanQR = () => {
                 <FaCamera /> Start Camera Scanner
               </button>
 
+              <button onClick={triggerFileUpload} className="btn btn-secondary scan-btn" disabled={loading}>
+                <FaUpload /> Upload QR Image
+              </button>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/*"
+                style={{ display: 'none' }}
+              />
+
+              <div className="divider-text">OR</div>
+
               <button
                 onClick={() => setManualInput(true)}
-                className="btn btn-secondary scan-btn"
+                className="btn btn-outline scan-btn"
               >
                 <FaKeyboard /> Enter Manually
               </button>
             </div>
           )}
+
+          {/* Hidden div for file scanning */}
+          <div id="qr-reader-file" style={{ display: 'none' }}></div>
 
           {/* QR Reader - Always in DOM, visibility controlled by CSS */}
           <div className="scanner-container" style={{ display: scanning ? 'block' : 'none' }}>
@@ -201,12 +249,35 @@ const ScanQR = () => {
 
         <div className="info-section card">
           <h2>How it works</h2>
-          <ol>
-            <li>Tap "Start Camera Scanner"</li>
-            <li>Allow camera access when prompted</li>
-            <li>Point camera at vehicle QR code</li>
-            <li>Vehicle details open automatically</li>
-          </ol>
+          <div className="info-columns">
+            <div className="info-column">
+              <h3>📷 Camera Scanner</h3>
+              <ol>
+                <li>Tap "Start Camera Scanner"</li>
+                <li>Allow camera access</li>
+                <li>Point at QR code</li>
+                <li>Auto-redirect to vehicle</li>
+              </ol>
+            </div>
+            <div className="info-column">
+              <h3>🖼️ Upload Image</h3>
+              <ol>
+                <li>Tap "Upload QR Image"</li>
+                <li>Select image from gallery</li>
+                <li>QR code is scanned</li>
+                <li>Auto-redirect to vehicle</li>
+              </ol>
+            </div>
+            <div className="info-column">
+              <h3>⌨️ Manual Entry</h3>
+              <ol>
+                <li>Tap "Enter Manually"</li>
+                <li>Type unique ID</li>
+                <li>Submit the form</li>
+                <li>View vehicle details</li>
+              </ol>
+            </div>
+          </div>
         </div>
       </div>
     </div>

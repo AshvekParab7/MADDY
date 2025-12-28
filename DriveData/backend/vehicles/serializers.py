@@ -159,11 +159,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                 {"password": "Password fields didn't match."}
             )
 
-        if User.objects.filter(email=attrs['email']).exists():
-            raise serializers.ValidationError(
-                {"email": "A user with this email already exists."}
-            )
-
         return attrs
 
     def create(self, validated_data):
