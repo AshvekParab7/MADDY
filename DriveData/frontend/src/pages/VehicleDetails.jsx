@@ -27,8 +27,10 @@ const VehicleDetails = () => {
       // Regular user
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        setCurrentUserId(payload.user_id);
+        // Ensure user_id is a number for consistent comparison
+        setCurrentUserId(Number(payload.user_id));
         setIsAdmin(false);
+        console.log('Current User ID from token:', Number(payload.user_id));
       } catch (error) {
         console.error('Error parsing token:', error);
       }
@@ -46,6 +48,10 @@ const VehicleDetails = () => {
       setVehicle(response.data);
       setImageTimestamp(Date.now()); // Update timestamp to force image reload
       setError('');
+      // Debug: Log owner ID from vehicle
+      console.log('Vehicle owner ID:', response.data.owner);
+      console.log('Current user ID:', currentUserId);
+      console.log('Is owner?', response.data.owner === currentUserId);
     } catch (err) {
       setError('Failed to load vehicle details.');
       console.error('Error fetching vehicle:', err);
@@ -107,7 +113,8 @@ const VehicleDetails = () => {
           <button onClick={() => navigate(isAdmin ? '/admin/vehicles' : '/vehicles')} className="btn btn-secondary back-btn">
             <FaArrowLeft /> Back to List
           </button>
-          {(isAdmin || vehicle.owner === currentUserId) && (
+          {/* Show edit button for admin OR vehicle owner */}
+          {(isAdmin || (vehicle.owner && currentUserId && Number(vehicle.owner) === Number(currentUserId))) && (
             <button onClick={() => navigate(`/edit-vehicle/${id}`)} className="btn btn-primary edit-btn">
               <FaEdit /> Edit Vehicle
             </button>

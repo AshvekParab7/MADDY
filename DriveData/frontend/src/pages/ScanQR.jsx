@@ -114,7 +114,7 @@ const ScanQR = () => {
   return (
     <div className="scan-qr-page">
       <div className="container">
-        <h1>Scan Vehicle QR Code</h1>
+        <h1>Scan QR Code</h1>
         <p className="subtitle">
           {scanning
             ? 'Point your camera at the QR code'
