@@ -27,43 +27,69 @@ const ScanQR = () => {
 
   /* ================== START CAMERA SCANNER ================== */
   const startScanning = async () => {
-  setError('');
-  setScannedText('');
+    setError('');
+    setScannedText('');
 
-  try {
-    const html5Qrcode = new Html5Qrcode('qr-reader');
-    html5QrcodeRef.current = html5Qrcode;
+    try {
+      // Request camera permissions first
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      // Stop the test stream
+      stream.getTracks().forEach(track => track.stop());
 
-    const cameras = await Html5Qrcode.getCameras();
-    if (!cameras || cameras.length === 0) {
-      throw new Error("No cameras found");
-    }
+      const html5Qrcode = new Html5Qrcode('qr-reader');
+      html5QrcodeRef.current = html5Qrcode;
 
-    const backCamera =
-      cameras.find(cam => cam.label.toLowerCase().includes("back")) || cameras[0];
-
-    await html5Qrcode.start(
-      backCamera.id,
-      {
+      const config = {
         fps: 10,
         qrbox: { width: 250, height: 250 },
-      },
-      async (decodedText) => {
-        setScannedText(decodedText);
-        await stopScanning();
-        await lookupVehicle(decodedText);
+        aspectRatio: 1.0,
+      };
+
+      // Try back camera first, fallback to any camera
+      const cameraConfig = { facingMode: { ideal: 'environment' } };
+
+      await html5Qrcode.start(
+        cameraConfig,
+        config,
+        async (decodedText) => {
+          // On successful scan
+          setScannedText(decodedText);
+          await stopScanning();
+          await lookupVehicle(decodedText);
+        },
+        (errorMessage) => {
+          // On scan error (ignore, this fires continuously)
+          // console.log('Scan error:', errorMessage);
+        }
+      );
+
+      setScanning(true);
+    } catch (err) {
+      console.error('Error starting scanner:', err);
+      
+      let errorMsg = 'Unable to access camera. ';
+      
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        errorMsg += 'Please allow camera access in your browser settings.';
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        errorMsg += 'No camera found on your device.';
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        errorMsg += 'Camera is already in use by another application.';
+      } else if (err.name === 'NotSupportedError') {
+        errorMsg += 'Camera is not supported on this device/browser.';
+      } else if (err.message && err.message.includes('secure')) {
+        errorMsg += 'Camera requires HTTPS. Please use a secure connection.';
+      } else {
+        errorMsg += 'Please check camera permissions and try again.';
       }
-    );
+      
+      setError(errorMsg);
+    }
+  };
 
-    setScanning(true);
-  } catch (err) {
-    console.error('Error starting scanner:', err);
-    setError('Unable to access camera. Please check camera permissions.');
-  }
-};
-
-
-  /* ================== STOP SCANNER ==================== */
+  /* ================== STOP SCANNER ================== */
   const stopScanning = async () => {
     try {
       if (html5QrcodeRef.current) {
