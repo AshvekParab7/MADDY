@@ -165,9 +165,9 @@ class Vehicle(models.Model):
         qr_image.save(buffer, format='PNG')
         buffer.seek(0)
         
-        # Save to model
+        # Assign to CloudinaryField directly (DO NOT call .save())
         filename = f'qr_{self.registration_number}.png'
-        self.qr_code.save(filename, File(buffer), save=False)
+        self.qr_code = File(buffer, name=filename)
         
         print(f"QR code generated for {self.registration_number}")
 
@@ -274,8 +274,9 @@ class Vehicle(models.Model):
         logo_img.save(buffer, format='PNG')
         buffer.seek(0)
         
+        # Assign to CloudinaryField directly (DO NOT call .save())
         filename = f'logo_{self.registration_number}.png'
-        self.logo.save(filename, File(buffer), save=False)
+        self.logo = File(buffer, name=filename)
         print(f"Logo generated for {self.registration_number}")
 
     class Meta:
