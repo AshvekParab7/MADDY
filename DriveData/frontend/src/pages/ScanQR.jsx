@@ -63,7 +63,7 @@ const ScanQR = () => {
 };
 
 
-  /* ================== STOP SCANNER ================== */
+  /* ================== STOP SCANNER ==================== */
   const stopScanning = async () => {
     try {
       if (html5QrcodeRef.current) {
