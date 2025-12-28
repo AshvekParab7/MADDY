@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from cloudinary.models import CloudinaryField
+import cloudinary.uploader
 import uuid
 import qrcode
 from io import BytesIO
@@ -165,11 +166,19 @@ class Vehicle(models.Model):
         qr_image.save(buffer, format='PNG')
         buffer.seek(0)
         
-        # Assign to CloudinaryField directly (DO NOT call .save())
-        filename = f'qr_{self.registration_number}.png'
-        self.qr_code = File(buffer, name=filename)
+        # Upload to Cloudinary and get URL
+        filename = f'qr_{self.registration_number}'
+        upload_result = cloudinary.uploader.upload(
+            buffer,
+            resource_type="image",
+            public_id=filename,
+            folder="vehicle_qr_codes"
+        )
         
-        print(f"QR code generated for {self.registration_number}")
+        # Assign Cloudinary URL to field
+        self.qr_code = upload_result["secure_url"]
+        
+        print(f"QR code generated and uploaded to Cloudinary for {self.registration_number}")
 
     def generate_logo(self):
         """Generate a unique logo with car silhouette and embedded QR code"""
@@ -232,26 +241,12 @@ class Vehicle(models.Model):
         # Load and embed QR code in the center of the car
         if self.qr_code:
             try:
-                # Support both filesystem and Cloudinary
-                if hasattr(self.qr_code, 'path'):
-                    try:
-                        # Try local filesystem first
-                        qr_img = Image.open(self.qr_code.path)
-                        print(f"📁 Loading QR code from local path")
-                    except (AttributeError, FileNotFoundError):
-                        # Fallback to Cloudinary URL
-                        from urllib.request import urlopen
-                        qr_url = self.qr_code.url
-                        print(f"☁️ Downloading QR code from Cloudinary: {qr_url}")
-                        response = urlopen(qr_url)
-                        qr_img = Image.open(BytesIO(response.read()))
-                else:
-                    # Direct Cloudinary URL download
-                    from urllib.request import urlopen
-                    qr_url = self.qr_code.url
-                    print(f"☁️ Downloading QR code from Cloudinary: {qr_url}")
-                    response = urlopen(qr_url)
-                    qr_img = Image.open(BytesIO(response.read()))
+                # Download QR code from Cloudinary URL
+                from urllib.request import urlopen
+                qr_url = str(self.qr_code)
+                print(f"☁️ Downloading QR code from: {qr_url}")
+                response = urlopen(qr_url)
+                qr_img = Image.open(BytesIO(response.read()))
                 
                 # Resize QR code to fit prominently in car body
                 qr_size = 300
@@ -269,15 +264,23 @@ class Vehicle(models.Model):
                 import traceback
                 traceback.print_exc()
         
-        # Save logo
+        # Save logo to buffer
         buffer = BytesIO()
         logo_img.save(buffer, format='PNG')
         buffer.seek(0)
         
-        # Assign to CloudinaryField directly (DO NOT call .save())
-        filename = f'logo_{self.registration_number}.png'
-        self.logo = File(buffer, name=filename)
-        print(f"Logo generated for {self.registration_number}")
+        # Upload to Cloudinary and get URL
+        filename = f'logo_{self.registration_number}'
+        upload_result = cloudinary.uploader.upload(
+            buffer,
+            resource_type="image",
+            public_id=filename,
+            folder="vehicle_logos"
+        )
+        
+        # Assign Cloudinary URL to field
+        self.logo = upload_result["secure_url"]
+        print(f"Logo generated and uploaded to Cloudinary for {self.registration_number}")
 
     class Meta:
         ordering = ['-created_at']
