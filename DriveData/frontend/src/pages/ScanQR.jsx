@@ -27,37 +27,41 @@ const ScanQR = () => {
 
   /* ================== START CAMERA SCANNER ================== */
   const startScanning = async () => {
-    setError('');
-    setScannedText('');
+  setError('');
+  setScannedText('');
 
-    try {
-      const html5Qrcode = new Html5Qrcode('qr-reader');
-      html5QrcodeRef.current = html5Qrcode;
+  try {
+    const html5Qrcode = new Html5Qrcode('qr-reader');
+    html5QrcodeRef.current = html5Qrcode;
 
-      await html5Qrcode.start(
-        { facingMode: 'environment' }, // Use back camera
-        {
-          fps: 10, // Frames per second
-          qrbox: { width: 250, height: 250 }, // Scanning box size
-        },
-        async (decodedText) => {
-          // On successful scan
-          setScannedText(decodedText);
-          await stopScanning();
-          await lookupVehicle(decodedText);
-        },
-        (errorMessage) => {
-          // On scan error (ignore, this fires continuously)
-          // console.log('Scan error:', errorMessage);
-        }
-      );
-
-      setScanning(true);
-    } catch (err) {
-      console.error('Error starting scanner:', err);
-      setError('Unable to access camera. Please check camera permissions.');
+    const cameras = await Html5Qrcode.getCameras();
+    if (!cameras || cameras.length === 0) {
+      throw new Error("No cameras found");
     }
-  };
+
+    const backCamera =
+      cameras.find(cam => cam.label.toLowerCase().includes("back")) || cameras[0];
+
+    await html5Qrcode.start(
+      backCamera.id,
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+      },
+      async (decodedText) => {
+        setScannedText(decodedText);
+        await stopScanning();
+        await lookupVehicle(decodedText);
+      }
+    );
+
+    setScanning(true);
+  } catch (err) {
+    console.error('Error starting scanner:', err);
+    setError('Unable to access camera. Please check camera permissions.');
+  }
+};
+
 
   /* ================== STOP SCANNER ================== */
   const stopScanning = async () => {
