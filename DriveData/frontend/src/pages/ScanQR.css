@@ -54,6 +54,12 @@
 #qr-reader video {
   border-radius: 8px;
   width: 100% !important;
+  height: auto !important;
+}
+
+#qr-reader canvas {
+  width: 100% !important;
+  height: auto !important;
 }
 
 #qr-reader__dashboard {

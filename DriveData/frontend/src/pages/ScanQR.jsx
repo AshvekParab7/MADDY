@@ -31,28 +31,12 @@ const ScanQR = () => {
     setScannedText('');
 
     try {
-      // Request camera permissions first
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      // Stop the test stream
-      stream.getTracks().forEach(track => track.stop());
-
       const html5Qrcode = new Html5Qrcode('qr-reader');
       html5QrcodeRef.current = html5Qrcode;
 
-      const config = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0,
-      };
-
-      // Try back camera first, fallback to any camera
-      const cameraConfig = { facingMode: { ideal: 'environment' } };
-
       await html5Qrcode.start(
-        cameraConfig,
-        config,
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
         async (decodedText) => {
           // On successful scan
           setScannedText(decodedText);
@@ -153,25 +137,28 @@ const ScanQR = () => {
             </div>
           )}
 
-          {scanning && (
-            <div className="scanner-container">
-              <div id="qr-reader"></div>
-              
-              <button
-                onClick={stopScanning}
-                className="btn btn-danger stop-btn"
-                style={{ marginTop: '20px', width: '100%' }}
-              >
-                <FaStop /> Stop Scanning
-              </button>
-              
-              {scannedText && (
-                <div className="scanned-result">
-                  <strong>Scanned:</strong> {scannedText}
-                </div>
-              )}
-            </div>
-          )}
+          {/* QR Reader - Always in DOM, visibility controlled by CSS */}
+          <div className="scanner-container" style={{ display: scanning ? 'block' : 'none' }}>
+            <div id="qr-reader"></div>
+            
+            {scanning && (
+              <>
+                <button
+                  onClick={stopScanning}
+                  className="btn btn-danger stop-btn"
+                  style={{ marginTop: '20px', width: '100%' }}
+                >
+                  <FaStop /> Stop Scanning
+                </button>
+                
+                {scannedText && (
+                  <div className="scanned-result">
+                    <strong>Scanned:</strong> {scannedText}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
           {manualInput && (
             <div className="manual-input-container">
