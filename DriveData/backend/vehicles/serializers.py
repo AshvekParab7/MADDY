@@ -38,6 +38,9 @@ class VehicleSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
+        # Add owner ID to response (HiddenField doesn't include it by default)
+        representation['owner'] = instance.owner.id
+
         cloudinary_fields = [
             'owner_photo',
             'front_photo',
